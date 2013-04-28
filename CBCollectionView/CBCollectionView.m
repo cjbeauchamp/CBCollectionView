@@ -10,7 +10,7 @@
 
 #import "CBCollectionCell.h"
 
-#define PADDING     10
+#define PADDING     6
 
 @interface CBCollectionView() {
     NSArray *_dataSource;
@@ -48,10 +48,10 @@
         
         if(_cellCreator == nil) continue;
         
-        CGFloat height = 100.0f;
+        CGFloat height = 120.0f;
         
         // create a container
-        CGRect frame = CGRectMake(10, PADDING+(height+PADDING)*ndx, 300, height);
+        CGRect frame = CGRectMake(PADDING, PADDING+(height+PADDING)*ndx, self.bounds.size.width - PADDING*2, height);
         CBCollectionCell *cell = [[CBCollectionCell alloc] initWithFrame:frame];
         cell.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         cell = _cellCreator(cell, obj);
