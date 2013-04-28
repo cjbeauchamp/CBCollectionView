@@ -23,19 +23,37 @@
 @synthesize cellCreator = _cellCreator;
 @synthesize dataSource = _dataSource;
 
-- (void) setDataSource:(NSArray*)dataSource {
-    
-    _dataSource = dataSource;
-    
+- (id) initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if(self) {
+        _dataSource = [[NSArray alloc] init];
+        _cellCreator = nil;
+        
+        self.backgroundColor = [UIColor brownColor];
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    }
+    return self;
+}
+
+- (void) updateLayout
+{
     int ndx = 0;
     CGFloat maxContentY = 0.0f;
     
+    NSLog(@"Setting datasource: %@", _dataSource);
+    
     // use this point to update the view
-    for(id obj in dataSource) {
+    for(id obj in _dataSource) {
+        
+        if(_cellCreator == nil) continue;
+        
+        CGFloat height = 100.0f;
         
         // create a container
-        CGRect frame = CGRectMake(10, PADDING+200*ndx, 300, 180);
+        CGRect frame = CGRectMake(10, PADDING+(height+PADDING)*ndx, 300, height);
         CBCollectionCell *cell = [[CBCollectionCell alloc] initWithFrame:frame];
+        cell.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         cell = _cellCreator(cell, obj);
         [self addSubview:cell];
         
@@ -47,7 +65,21 @@
         ++ndx;
     }
     
-    self.contentSize = CGSizeMake(self.frame.size.width, maxContentY + PADDING);
+    [self setContentSize:CGSizeMake(self.frame.size.width, maxContentY + PADDING)];
+
+}
+
+- (void) setDataSource:(NSArray*)dataSource {
+
+    _dataSource = dataSource;
+
+    // make sure this is run on the main thread
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        [self updateLayout];
+    
+    });
+
 }
 
 @end

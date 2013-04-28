@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
-@class CBCollectionCell;
+#import "CBCollectionCell.h"
 
 typedef CBCollectionCell* (^CBCellCreationBlock)(CBCollectionCell *container, id object);
 
