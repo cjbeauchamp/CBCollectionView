@@ -59,7 +59,6 @@
 /* Begin PBXFileReference section */
 		CA4E467F172CA860000C023C /* libCBCollectionView.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCBCollectionView.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA4E4682172CA860000C023C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		CA4E4686172CA860000C023C /* CBCollectionView-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CBCollectionView-Prefix.pch"; sourceTree = "<group>"; };
 		CA4E4687172CA860000C023C /* CBCollectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBCollectionView.h; sourceTree = "<group>"; };
 		CA4E4689172CA860000C023C /* CBCollectionView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CBCollectionView.m; sourceTree = "<group>"; };
 		CA4E4690172CA861000C023C /* CBCollectionViewTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CBCollectionViewTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -160,17 +159,8 @@
 				CA4E4689172CA860000C023C /* CBCollectionView.m */,
 				CA4E46EA172CAAC6000C023C /* CBCollectionCell.h */,
 				CA4E46EB172CAAC6000C023C /* CBCollectionCell.m */,
-				CA4E4685172CA860000C023C /* Supporting Files */,
 			);
 			path = CBCollectionView;
-			sourceTree = "<group>";
-		};
-		CA4E4685172CA860000C023C /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				CA4E4686172CA860000C023C /* CBCollectionView-Prefix.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		CA4E4699172CA861000C023C /* CBCollectionViewTests */ = {
@@ -477,8 +467,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DSTROOT = /tmp/CBCollectionView.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "CBCollectionView/CBCollectionView-Prefix.pch";
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -489,8 +479,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DSTROOT = /tmp/CBCollectionView.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "CBCollectionView/CBCollectionView-Prefix.pch";
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -581,6 +571,7 @@
 				CA4E46A6172CA861000C023C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CA4E46A7172CA861000C023C /* Build configuration list for PBXNativeTarget "CBCollectionViewTests" */ = {
 			isa = XCConfigurationList;
@@ -589,6 +580,7 @@
 				CA4E46A9172CA861000C023C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CA4E46E2172CA8B6000C023C /* Build configuration list for PBXNativeTarget "CBCollectionViewSample" */ = {
 			isa = XCConfigurationList;
@@ -597,6 +589,7 @@
 				CA4E46E4172CA8B6000C023C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
