@@ -14,13 +14,13 @@
 
 @interface CBCollectionView() {
     NSArray *_dataSource;
-    CBCellCreationBlock _cellCreator;
+    __unsafe_unretained id<CBCollectionViewDelegate> _collectionDelegate;
 }
 @end
 
 @implementation CBCollectionView
 
-@synthesize cellCreator = _cellCreator;
+@synthesize collectionDelegate = _collectionDelegate;
 @synthesize dataSource = _dataSource;
 
 - (id) initWithFrame:(CGRect)frame
@@ -28,45 +28,52 @@
     self = [super initWithFrame:frame];
     if(self) {
         _dataSource = [[NSArray alloc] init];
-        _cellCreator = nil;
         
-        self.backgroundColor = [UIColor brownColor];
+        self.backgroundColor = FEED_BACKGROUND_COLOR;
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     }
     return self;
 }
 
+- (void) cellTapped:(UIGestureRecognizer*)gesture
+{
+    [_collectionDelegate selectedCellAtIndex:gesture.view.tag inCollection:self];
+}
+
 - (void) updateLayout
 {
-    int ndx = 0;
-    CGFloat maxContentY = 0.0f;
+    NSLog(@"Updating layout");
     
-    NSLog(@"Setting datasource: %@", _dataSource);
+    CGFloat maxContentY = 0.0f;
+        
+    int ct = [_collectionDelegate itemsInCollection:self];
     
     // use this point to update the view
-    for(id obj in _dataSource) {
-        
-        if(_cellCreator == nil) continue;
+    for(int ndx=0; ndx<ct; ndx++) {
         
         CGFloat height = 120.0f;
         
         // create a container
         CGRect frame = CGRectMake(PADDING, PADDING+(height+PADDING)*ndx, self.bounds.size.width - PADDING*2, height);
         CBCollectionCell *cell = [[CBCollectionCell alloc] initWithFrame:frame];
+        cell.tag = ndx;
         cell.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        cell = _cellCreator(cell, obj);
+        cell = [_collectionDelegate cellForIndex:ndx inCollection:self usingContainer:cell];
         [self addSubview:cell];
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)];
+        [cell addGestureRecognizer:tap];
         
         CGFloat thisMax = cell.frame.origin.y + cell.frame.size.height;
         if(thisMax > maxContentY) {
             maxContentY = thisMax;
         }
         
-        ++ndx;
     }
     
     [self setContentSize:CGSizeMake(self.frame.size.width, maxContentY + PADDING)];
 
+    NSLog(@"Done updating layout");
 }
 
 - (void) setDataSource:(NSArray*)dataSource {
