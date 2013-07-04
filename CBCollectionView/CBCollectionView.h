@@ -26,13 +26,17 @@
 - (void) selectedCellAtIndex:(int)ndx
                 inCollection:(CBCollectionView*)collection;
 
+- (void) refreshData;
+
 @end
 
-@interface CBCollectionView : UIScrollView
+@interface CBCollectionView : UIScrollView <UIScrollViewDelegate>
 
 @property (nonatomic, strong) NSArray *dataSource;
 @property (nonatomic, assign) id<CBCollectionViewDelegate> collectionDelegate;
 
 - (void) updateLayout;
+- (void) startLoading;
+- (void) doneLoading;
 
 @end
