@@ -10,6 +10,7 @@
 #import <Foundation/Foundation.h>
 
 #import "CBCollectionCell.h"
+#define REFRESH_HEADER_HEIGHT   52.0f
 
 @class CBCollectionView, CBCollectionCell;
 

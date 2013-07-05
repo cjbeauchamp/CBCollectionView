@@ -13,7 +13,6 @@
 #import "UIView+CBExtensions.h"
 
 #define PADDING     6
-#define REFRESH_HEADER_HEIGHT   52.0f
 
 @interface CBCollectionView() {
     NSArray *_dataSource;
@@ -147,7 +146,6 @@
             self.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
     } else if (isDragging && scrollView.contentOffset.y < 0) {
         
-        
         // Update the progress arrow
         CGFloat progress = fabs(scrollView.contentOffset.y / REFRESH_HEADER_HEIGHT);
         CGFloat deadZone = 0.3;
@@ -158,7 +156,6 @@
         else {
             arrow.progress = 0.0;
         }
-
         
         // Update the arrow direction and label
         [UIView animateWithDuration:0.25 animations:^{
@@ -182,11 +179,13 @@
 
 - (void)startLoading {
     isLoading = YES;
-    
+        
     // Show the header
     [UIView animateWithDuration:0.3 animations:^{
         self.contentInset = UIEdgeInsetsMake(REFRESH_HEADER_HEIGHT, 0, 0, 0);
     }];
+    
+//    [self setContentOffset:CGPointMake(0, -1*REFRESH_HEADER_HEIGHT) animated:TRUE];
     
     // hide the arrow and show the spinner
     arrow.alpha = 0.0f;
