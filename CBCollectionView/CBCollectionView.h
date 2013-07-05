@@ -16,6 +16,13 @@
 
 @protocol CBCollectionViewDelegate <NSObject>
 
+@optional
+
+- (void) selectedCellAtIndex:(int)ndx
+                inCollection:(CBCollectionView*)collection;
+
+- (void) refreshData;
+
 @required
 
 - (CBCollectionCell*) cellForIndex:(int)index
@@ -23,11 +30,6 @@
                     usingContainer:(CBCollectionCell*)container;
 
 - (int) itemsInCollection:(CBCollectionView*)collection;
-
-- (void) selectedCellAtIndex:(int)ndx
-                inCollection:(CBCollectionView*)collection;
-
-- (void) refreshData;
 
 @end
 
