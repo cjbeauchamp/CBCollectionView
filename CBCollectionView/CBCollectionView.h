@@ -33,7 +33,7 @@
 
 @end
 
-@interface CBCollectionView : UIScrollView <UIScrollViewDelegate>
+@interface CBCollectionView : UIScrollView <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) NSArray *dataSource;
 @property (nonatomic, assign) id<CBCollectionViewDelegate> collectionDelegate;

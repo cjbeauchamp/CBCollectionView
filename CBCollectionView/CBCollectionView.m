@@ -11,6 +11,7 @@
 #import "CBCollectionCell.h"
 #import "CKRefreshArrowView.h"
 #import "UIView+CBExtensions.h"
+#import "TTTAttributedLabel.h"
 
 #define PADDING     6
 
@@ -79,6 +80,7 @@
 
 - (void) cellTapped:(UIGestureRecognizer*)gesture
 {
+    NSLog(@"Cell tappy");
     [_collectionDelegate selectedCellAtIndex:gesture.view.tag inCollection:self];
 }
 
@@ -104,6 +106,8 @@
         [self addSubview:cell];
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)];
+        tap.cancelsTouchesInView = YES;
+        tap.delegate = self;
         [cell addGestureRecognizer:tap];
         
         CGFloat thisMax = cell.frame.origin.y + cell.frame.size.height;
@@ -225,5 +229,16 @@
     [self stopLoading];
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    if ([touch.view isKindOfClass:[TTTAttributedLabel class]])
+    {
+        TTTAttributedLabel *label = (TTTAttributedLabel *)touch.view;
+        NSTextCheckingResult *result = [label linkAtPoint:[touch locationInView:label]];
+        if (result.numberOfRanges > 0) return NO;
+        else return YES;
+    }
+    return YES;
+}
 
 @end
