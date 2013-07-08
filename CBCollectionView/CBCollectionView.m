@@ -13,10 +13,12 @@
 #import "UIView+CBExtensions.h"
 #import "TTTAttributedLabel.h"
 
-#define PADDING     6
+#define DEFAULT_PADDING     6
 
 @interface CBCollectionView() {
     NSArray *_dataSource;
+    NSMutableArray *_cells;
+    CGFloat _padding;
     __unsafe_unretained id<CBCollectionViewDelegate> _collectionDelegate;
     
     // refresh
@@ -32,6 +34,7 @@
 
 @synthesize collectionDelegate = _collectionDelegate;
 @synthesize dataSource = _dataSource;
+@synthesize padding = _padding;
 
 - (void) doRefresh:(id)sender
 {
@@ -43,6 +46,7 @@
     self = [super initWithFrame:frame];
     if(self) {
         _dataSource = [[NSArray alloc] init];
+        _padding = DEFAULT_PADDING;
         
         self.backgroundColor = FEED_BACKGROUND_COLOR;
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -89,8 +93,10 @@
     NSLog(@"Updating layout");
     
     CGFloat maxContentY = 0.0f;
-        
+    
+    _cells = [[NSMutableArray alloc] init];
     int ct = [_collectionDelegate itemsInCollection:self];
+    CGRect previousFrame = CGRectZero;
     
     // use this point to update the view
     for(int ndx=0; ndx<ct; ndx++) {
@@ -98,12 +104,17 @@
         CGFloat height = 120.0f;
         
         // create a container
-        CGRect frame = CGRectMake(PADDING, PADDING+(height+PADDING)*ndx, self.bounds.size.width - PADDING*2, height);
+        CGRect frame = CGRectMake(_padding, previousFrame.origin.y+previousFrame.size.height+_padding, self.bounds.size.width - _padding*2, height);
         CBCollectionCell *cell = [[CBCollectionCell alloc] initWithFrame:frame];
         cell.tag = ndx;
         cell.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         cell = [_collectionDelegate cellForIndex:ndx inCollection:self usingContainer:cell];
         [self addSubview:cell];
+        
+        NSLog(@"Frame: %@", NSStringFromCGRect(cell.frame));
+        
+        // this is a patch to do dynamic height. the height is changed in the delegate
+        previousFrame = cell.frame;
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)];
         tap.cancelsTouchesInView = YES;
@@ -115,11 +126,16 @@
             maxContentY = thisMax;
         }
         
+        [_cells insertObject:cell atIndex:ndx];
     }
     
-    [self setContentSize:CGSizeMake(self.frame.size.width, maxContentY + PADDING)];
+    [self setContentSize:CGSizeMake(self.frame.size.width, maxContentY + _padding)];
     
     NSLog(@"Done updating layout: %@", NSStringFromCGSize(self.contentSize));
+}
+
+- (CBCollectionCell*) cellForIndex:(int)index {
+    return [_cells objectAtIndex:index];
 }
 
 - (void) setDataSource:(NSArray*)dataSource {

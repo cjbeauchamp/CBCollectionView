@@ -37,7 +37,9 @@
 
 @property (nonatomic, strong) NSArray *dataSource;
 @property (nonatomic, assign) id<CBCollectionViewDelegate> collectionDelegate;
+@property (nonatomic, assign) CGFloat padding;
 
+- (CBCollectionCell*) cellForIndex:(int)index;
 - (void) updateLayout;
 - (void) startLoading;
 - (void) doneLoading;
