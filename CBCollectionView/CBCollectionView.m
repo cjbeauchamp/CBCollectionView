@@ -22,11 +22,12 @@
     __unsafe_unretained id<CBCollectionViewDelegate> _collectionDelegate;
     
     // refresh
+    BOOL _refreshControlEnabled;
     UIView *refreshHeader;
     BOOL isLoading;
-    BOOL isDragging;
+    BOOL _isDragging;
     CKRefreshArrowView *arrow;
-    UIActivityIndicatorView *spinner;
+    UIActivityIndicatorView *_spinner;
 }
 @end
 
@@ -35,6 +36,7 @@
 @synthesize collectionDelegate = _collectionDelegate;
 @synthesize dataSource = _dataSource;
 @synthesize padding = _padding;
+@synthesize spinner = _spinner;
 
 - (void) doRefresh:(id)sender
 {
@@ -57,7 +59,7 @@
         refreshHeader = [[UIView alloc] initWithFrame:CGRectMake(0, -1*REFRESH_HEADER_HEIGHT, frame.size.width, REFRESH_HEADER_HEIGHT)];
         refreshHeader.backgroundColor = [UIColor clearColor];
         [self addSubview:refreshHeader];
-        
+
         arrow = [[CKRefreshArrowView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
         arrow.tintColor = ACCENT_COLOR;
         arrow.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
@@ -66,17 +68,17 @@
         arrow.center = CGPointMake(refreshHeader.frame.size.width/2, refreshHeader.frame.size.height/2);
         [arrow normalizeView];
         
-        spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        spinner.center = (CGPoint){
+        _spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        _spinner.center = (CGPoint){
             .x = CGRectGetMidX(refreshHeader.bounds),
             .y = CGRectGetMidY(refreshHeader.bounds)
         };
-        spinner.color = ACCENT_COLOR;
-        spinner.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
+        _spinner.color = ACCENT_COLOR;
+        _spinner.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
                                     UIViewAutoresizingFlexibleRightMargin |
                                     UIViewAutoresizingFlexibleTopMargin |
                                     UIViewAutoresizingFlexibleBottomMargin);
-        [refreshHeader addSubview:spinner];
+        [refreshHeader addSubview:_spinner];
 
     }
     return self;
@@ -102,7 +104,7 @@
     for(int ndx=0; ndx<ct; ndx++) {
         
         CGFloat height = 120.0f;
-        
+
         // create a container
         CGRect frame = CGRectMake(_padding, previousFrame.origin.y+previousFrame.size.height+_padding, self.bounds.size.width - _padding*2, height);
         CBCollectionCell *cell = [[CBCollectionCell alloc] initWithFrame:frame];
@@ -154,17 +156,18 @@
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     if (isLoading) return;
-    isDragging = YES;
+    _isDragging = YES;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+
     if (isLoading) {
         // Update the content inset, good for section headers
         if (scrollView.contentOffset.y > 0)
             self.contentInset = UIEdgeInsetsZero;
         else if (scrollView.contentOffset.y >= -REFRESH_HEADER_HEIGHT)
             self.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
-    } else if (isDragging && scrollView.contentOffset.y < 0) {
+    } else if (_isDragging && scrollView.contentOffset.y < 0) {
         
         // Update the progress arrow
         CGFloat progress = fabs(scrollView.contentOffset.y / REFRESH_HEADER_HEIGHT);
@@ -190,7 +193,7 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (isLoading) return;
-    isDragging = NO;
+    _isDragging = NO;
     if (scrollView.contentOffset.y <= -REFRESH_HEADER_HEIGHT) {
         // Released above the header
         [self startLoading];
@@ -199,17 +202,15 @@
 
 - (void)startLoading {
     isLoading = YES;
-        
-    // Show the header
-    [UIView animateWithDuration:0.3 animations:^{
-        self.contentInset = UIEdgeInsetsMake(REFRESH_HEADER_HEIGHT, 0, 0, 0);
-    }];
     
-//    [self setContentOffset:CGPointMake(0, -1*REFRESH_HEADER_HEIGHT) animated:TRUE];
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         self.contentInset = UIEdgeInsetsMake(REFRESH_HEADER_HEIGHT, 0, 0, 0);
+                     }];
     
     // hide the arrow and show the spinner
     arrow.alpha = 0.0f;
-    [spinner startAnimating];
+    [_spinner startAnimating];
 
     // Refresh action!
     [self refresh];
@@ -224,14 +225,9 @@
                          self.contentInset = UIEdgeInsetsZero;
                      }
                      completion:^(BOOL finished) {
-                         [self performSelector:@selector(stopLoadingComplete)];
+                         arrow.alpha = 1.0f;
+                         [_spinner stopAnimating];
                      }];
-}
-
-- (void)stopLoadingComplete {
-    // Reset the header
-    arrow.alpha = 1.0f;
-    [spinner stopAnimating];
 }
 
 - (void)refresh {

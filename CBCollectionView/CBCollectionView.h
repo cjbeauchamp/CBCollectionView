@@ -38,6 +38,7 @@
 @property (nonatomic, strong) NSArray *dataSource;
 @property (nonatomic, assign) id<CBCollectionViewDelegate> collectionDelegate;
 @property (nonatomic, assign) CGFloat padding;
+@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
 - (CBCollectionCell*) cellForIndex:(int)index;
 - (void) updateLayout;

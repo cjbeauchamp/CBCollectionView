@@ -31,8 +31,6 @@
     CGFloat range;
     CGFloat arrowRadius;
     CGFloat lineWidth;
-    
-    UIColor *glowColor;
 }
 
 + (Class)layerClass {
@@ -42,11 +40,9 @@
 static void commonSetup(CKRefreshArrowView *self) {
     self.tintColor = [UIColor colorWithWhite:0.5 alpha:1];
     self.backgroundColor = [UIColor clearColor];
+    self.alpha = 0.0f;
     
     self->range = (M_PI * 1.5);
-    self.layer.shadowOpacity = 0;
-    self.layer.shadowRadius = 2;
-    self.layer.shadowOffset = (CGSizeZero);
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -106,31 +102,13 @@ static void commonSetup(CKRefreshArrowView *self) {
     else {
         [self.tintColor getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha];
     }
-    
-    // If it's in the middle, pull toward the extreme. If it's at an extreme, pull toward the middle.
-    CGFloat centerThreshold = 0.5;
-    CGFloat edgeThreshold = 0.15;
-    CGFloat glowFactor = 0.35;
-    
-    brightness *= alpha;
-    CGFloat glowBrightness = 0.0;
-    
-    if ((brightness > edgeThreshold && brightness <= centerThreshold) || brightness > (1 - edgeThreshold)) {
-        // Going darker
-        glowBrightness = brightness - glowFactor;
-    }
-    else {
-        // Going lighter
-        glowBrightness = brightness + glowFactor;
-    }
-    glowColor = [UIColor colorWithHue:hue saturation:saturation brightness:glowBrightness alpha:1];
-    self.layer.shadowColor = [[UIColor colorWithHue:0 saturation:0 brightness:glowBrightness - 0.3 alpha:0.8] CGColor];
 }
 
 - (void)updateShapeLayerPath {
     
     CGFloat effectiveProgress = MIN(self.progress, 1.0);
-    BOOL shouldGlow = (self.progress >= 1.0);
+    
+    self.alpha = self.progress;
     
     CGPoint center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     
@@ -184,17 +162,9 @@ static void commonSetup(CKRefreshArrowView *self) {
     // Animate on/off the glow if we've passed the threshold
     [CATransaction begin];
     [CATransaction setAnimationDuration:0.4];
-    self.layer.shadowOpacity = (shouldGlow ? 1.0 : 0.0);
-    self.layer.shadowPath = [path CGPath];
     
     CGColorRef targetColor = nil;
-    if (shouldGlow) {
-        targetColor = [glowColor CGColor];
-    }
-    else {
-        targetColor = [self.tintColor CGColor];
-    }
-    
+    targetColor = [self.tintColor CGColor];
     
     if (CGColorEqualToColor(targetColor, self.shapeLayer.fillColor) == NO) {
         self.shapeLayer.fillColor = targetColor;
