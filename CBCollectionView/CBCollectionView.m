@@ -58,6 +58,7 @@
         // add the refresh header
         refreshHeader = [[UIView alloc] initWithFrame:CGRectMake(0, -1*REFRESH_HEADER_HEIGHT, frame.size.width, REFRESH_HEADER_HEIGHT)];
         refreshHeader.backgroundColor = [UIColor clearColor];
+        refreshHeader.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         [self addSubview:refreshHeader];
 
         arrow = [[CKRefreshArrowView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
