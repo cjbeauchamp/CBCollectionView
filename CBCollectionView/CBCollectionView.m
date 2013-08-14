@@ -40,13 +40,14 @@
 
 - (void) doRefresh:(id)sender
 {
-    NSLog(@"SHOULD REFRESH");
+    CBLog(@"SHOULD REFRESH");
 }
 
 - (id) initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if(self) {
+        
         _dataSource = [[NSArray alloc] init];
         _padding = DEFAULT_PADDING;
         
@@ -87,14 +88,11 @@
 
 - (void) cellTapped:(UIGestureRecognizer*)gesture
 {
-    NSLog(@"Cell tappy");
     [_collectionDelegate selectedCellAtIndex:gesture.view.tag inCollection:self];
 }
 
 - (void) updateLayout
 {
-    NSLog(@"Updating layout");
-    
     CGFloat maxContentY = 0.0f;
     
     _cells = [[NSMutableArray alloc] init];
@@ -114,8 +112,6 @@
         cell = [_collectionDelegate cellForIndex:ndx inCollection:self usingContainer:cell];
         [self addSubview:cell];
         
-        NSLog(@"Frame: %@", NSStringFromCGRect(cell.frame));
-        
         // this is a patch to do dynamic height. the height is changed in the delegate
         previousFrame = cell.frame;
         
@@ -133,8 +129,6 @@
     }
     
     [self setContentSize:CGSizeMake(self.frame.size.width, maxContentY + _padding)];
-    
-    NSLog(@"Done updating layout: %@", NSStringFromCGSize(self.contentSize));
 }
 
 - (CBCollectionCell*) cellForIndex:(int)index {
