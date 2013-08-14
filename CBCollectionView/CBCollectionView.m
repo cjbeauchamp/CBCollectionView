@@ -10,7 +10,7 @@
 
 #import "CBCollectionCell.h"
 #import "CKRefreshArrowView.h"
-#import "UIView+CBExtensions.h"
+#import "UIView+KTUtilities.h"
 #import "TTTAttributedLabel.h"
 
 #define DEFAULT_PADDING     6
@@ -40,7 +40,7 @@
 
 - (void) doRefresh:(id)sender
 {
-    CBLog(@"SHOULD REFRESH");
+    NSLog(@"SHOULD REFRESH");
 }
 
 - (id) initWithFrame:(CGRect)frame
